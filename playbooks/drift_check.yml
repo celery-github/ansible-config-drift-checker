@@ -22,7 +22,7 @@
 
     - name: Create app config from template
       ansible.builtin.template:
-        src: ../templates/app.conf.j2
+        src: app.conf.j2
         dest: /tmp/demo-app/app.conf
         mode: '0644'
 
