@@ -1,5 +1,4 @@
-- name: Create app config from template
-  ansible.builtin.template:
-    src: app.conf.j2
-    dest: /tmp/demo-app/app.conf
-    mode: "0644"
+app_name=ansible-demo
+environment=github-actions
+managed_by=ansible
+os_family={{ ansible_facts['os_family'] }}
