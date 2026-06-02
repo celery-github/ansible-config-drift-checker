@@ -1,0 +1,29 @@
+name: Ansible Config Drift Check
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  ansible-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible ansible-lint
+
+      - name: Run ansible-lint
+        run: ansible-lint playbooks/drift_check.yml
+
+      - name: Run Ansible playbook
+        run: ansible-playbook -i inventory.ini playbooks/drift_check.yml
