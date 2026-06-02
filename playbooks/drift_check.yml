@@ -1,0 +1,37 @@
+---
+- name: Check runner configuration drift
+  hosts: local
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: Ensure required packages are installed
+      ansible.builtin.apt:
+        name:
+          - curl
+          - git
+          - unzip
+        state: present
+      become: true
+
+    - name: Create app config directory
+      ansible.builtin.file:
+        path: /tmp/demo-app
+        state: directory
+        mode: '0755'
+
+    - name: Create app config from template
+      ansible.builtin.template:
+        src: app.conf.j2
+        dest: /tmp/demo-app/app.conf
+        mode: '0644'
+
+    - name: Verify config file exists
+      ansible.builtin.stat:
+        path: /tmp/demo-app/app.conf
+      register: app_config
+
+    - name: Fail if config file is missing
+      ansible.builtin.fail:
+        msg: "Config drift detected: app.conf is missing"
+      when: not app_config.stat.exists
